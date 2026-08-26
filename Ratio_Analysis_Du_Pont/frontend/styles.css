@@ -1,0 +1,461 @@
+/* =========================================================================
+   THE RATIO LEDGER — design tokens
+   Subject: a hand-checked accounting ledger for ratio / DuPont analysis.
+   Palette avoids the cream+terracotta and near-black+neon defaults on
+   purpose: this is pale sage ledger paper with bottle-green ink and a
+   brick-red correction pen, gilt for the one warm highlight.
+   ========================================================================= */
+:root{
+  --paper:        #EFF3E9;
+  --paper-deep:   #E4EAD9;
+  --card:         #F8FAF3;
+  --rule:         #C3D2B7;
+  --rule-strong:  #9FB392;
+  --ink:          #17261C;
+  --ink-soft:     #4B5B47;
+  --ink-faint:    #7C8A75;
+  --bottle:       #24593F;
+  --bottle-soft:  #E4EEE2;
+  --brick:        #9A3324;
+  --brick-soft:   #F3E1DA;
+  --gilt:         #A9791F;
+  --gilt-soft:    #F1E6C8;
+
+  --display: 'Fraunces', Georgia, serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --radius: 3px;
+  --shadow-card: 0 1px 0 rgba(23,38,28,0.06), 0 1px 3px rgba(23,38,28,0.07);
+}
+
+*{ box-sizing: border-box; }
+html,body{ margin:0; padding:0; }
+body{
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+button, input, select{ font-family: inherit; }
+:focus-visible{ outline: 2px solid var(--bottle); outline-offset: 2px; }
+
+/* ---------------------------------------------------------------------- */
+/* Frame layout                                                           */
+/* ---------------------------------------------------------------------- */
+.ledger-frame{
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  min-height: 100vh;
+}
+@media (max-width: 880px){
+  .ledger-frame{ grid-template-columns: 1fr; }
+}
+
+/* ---------------------------------------------------------------------- */
+/* Index card (sidebar)                                                   */
+/* ---------------------------------------------------------------------- */
+.index-card{
+  background: var(--paper-deep);
+  border-right: 1px solid var(--rule-strong);
+  padding: 28px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  position: relative;
+}
+.index-card::after{
+  /* punched-card holes down the binder edge */
+  content: "";
+  position: absolute;
+  right: -1px; top: 0; bottom: 0; width: 1px;
+  background-image: radial-gradient(circle, var(--paper) 3px, transparent 3.2px);
+  background-size: 100% 34px;
+  background-repeat: repeat-y;
+  opacity: .5;
+}
+
+.index-card__brand{ display:flex; gap:12px; align-items:flex-start; }
+.brand-mark{
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--paper);
+  background: var(--bottle);
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  display:flex; align-items:center; justify-content:center;
+  flex: none;
+  box-shadow: var(--shadow-card);
+}
+.brand-text h1{
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 21px;
+  line-height: 1.15;
+  margin: 2px 0 4px;
+  letter-spacing: 0.01em;
+}
+.brand-text p{
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.index-card__form{ display:flex; flex-direction:column; gap:18px; }
+.field-group{ display:flex; flex-direction:column; gap:6px; }
+.field-row{ display:flex; gap:14px; }
+.field-row .field-group{ flex:1; min-width: 0; }
+.field-label{
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  font-weight: 600;
+}
+.field-label span{ color: var(--bottle); font-weight: 600; }
+
+.ruled-input{
+  background: var(--card);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  padding: 9px 10px;
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--ink);
+}
+.ruled-input:hover{ border-color: var(--bottle); }
+select.ruled-input{ appearance: none; cursor: pointer; }
+
+input[type="range"]{
+  width: 100%;
+  accent-color: var(--bottle);
+  margin-top: 6px;
+}
+
+.toggle-pair{ display:flex; border: 1px solid var(--rule-strong); border-radius: var(--radius); overflow:hidden; }
+.toggle-btn{
+  flex:1;
+  background: var(--card);
+  border: none;
+  padding: 9px 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  border-right: 1px solid var(--rule-strong);
+}
+.toggle-btn:last-child{ border-right:none; }
+.toggle-btn.is-active{ background: var(--bottle); color: var(--paper); }
+
+.is-hidden{ display:none !important; }
+
+.post-btn{
+  margin-top: 4px;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: background .12s ease, transform .12s ease;
+}
+.post-btn:hover{ background: var(--bottle); }
+.post-btn:active{ transform: translateY(1px); }
+.post-btn:disabled{ opacity: .55; cursor: progress; }
+
+.index-card__status{
+  min-height: 18px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+.index-card__status.is-error{ color: var(--brick); }
+.index-card__status.is-loading{ color: var(--ink-soft); }
+.index-card__status.is-warning{ color: var(--gilt); }
+
+.index-card__legend{
+  margin-top: auto;
+  border-top: 1px dashed var(--rule-strong);
+  padding-top: 16px;
+}
+.legend-title{
+  font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--ink-faint); font-weight: 700; margin: 0 0 8px;
+}
+.index-card__legend ul{ list-style:none; margin:0 0 10px; padding:0; display:flex; flex-direction:column; gap:6px; }
+.index-card__legend li{ font-size: 12px; color: var(--ink-soft); display:flex; align-items:center; gap:8px; }
+.swatch{ width:10px; height:10px; border-radius:2px; display:inline-block; flex:none; }
+.swatch--green{ background: var(--bottle); }
+.swatch--red{ background: var(--brick); }
+.stamp-mini{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:16px; height:16px; border-radius:50%;
+  border: 1.5px solid var(--brick); color: var(--brick);
+  font-size: 10px; font-weight: 700; flex:none;
+}
+.legend-source{ font-size: 11px; color: var(--ink-faint); line-height:1.5; margin:0; }
+.legend-source code{ font-family: var(--mono); background: var(--card); padding:0 3px; border-radius:2px; }
+
+/* ---------------------------------------------------------------------- */
+/* Ledger sheet (main area)                                                */
+/* ---------------------------------------------------------------------- */
+.ledger-sheet{
+  padding: 40px 44px 80px;
+  background-image: repeating-linear-gradient(
+    to bottom, transparent, transparent 37px, var(--rule) 38px
+  );
+  background-position: 0 96px;
+}
+@media (max-width: 640px){
+  .ledger-sheet{ padding: 28px 18px 60px; }
+}
+
+.empty-state{
+  max-width: 420px;
+  margin: 12vh auto 0;
+  text-align: center;
+  color: var(--ink-soft);
+}
+.empty-state__mark{
+  font-family: var(--display);
+  font-size: 52px;
+  color: var(--rule-strong);
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.empty-state h2{ font-family: var(--display); font-weight: 600; margin: 0 0 8px; color: var(--ink); }
+.empty-state p{ font-size: 14px; line-height: 1.5; margin:0; }
+
+.sheet-content{ max-width: 1080px; }
+
+.sheet-header{
+  display:flex; align-items:flex-start; justify-content:space-between; gap: 24px;
+  padding-bottom: 20px;
+  flex-wrap: wrap;
+}
+.sheet-header__title h2{
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 34px;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.sheet-subtitle{
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  margin: 6px 0 0;
+}
+.sheet-subtitle .flag{ color: var(--gilt); font-weight: 600; }
+
+/* Signature element: the reconciliation stamp -----------------------------
+   A real check, not decoration — it reflects whether this ticker's DuPont
+   components actually multiplied back to its directly-computed ROE
+   (the identity src/dupont.py's own tests assert). */
+.stamp{ flex: none; }
+.stamp__ring{
+  width: 96px; height: 96px;
+  border: 2.5px solid var(--brick);
+  border-radius: 50%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  color: var(--brick);
+  transform: rotate(-9deg);
+  position: relative;
+  font-family: var(--sans);
+  opacity: 0;
+  animation: stamp-in .35s ease-out .15s forwards;
+}
+.stamp__ring::before{
+  content:"";
+  position:absolute; inset: 6px;
+  border: 1px solid var(--brick);
+  border-radius: 50%;
+  opacity: .55;
+}
+.stamp__ring.is-unverified{ border-color: var(--ink-faint); color: var(--ink-faint); }
+.stamp__ring.is-unverified::before{ border-color: var(--ink-faint); }
+@keyframes stamp-in{
+  from{ opacity:0; transform: rotate(-9deg) scale(1.5); }
+  to{ opacity:1; transform: rotate(-9deg) scale(1); }
+}
+.stamp__word{ font-size: 8px; font-weight: 700; letter-spacing: 0.12em; }
+.stamp__center{ font-family: var(--mono); font-size: 15px; font-weight: 600; margin: 2px 0; }
+
+/* Section tabs --------------------------------------------------------- */
+.section-tabs{
+  display:flex; flex-wrap: wrap;
+  gap: 2px;
+  border-bottom: 1px solid var(--rule-strong);
+  margin-bottom: 26px;
+}
+.tab-btn{
+  background: none; border: none; cursor: pointer;
+  padding: 10px 16px 12px;
+  font-family: var(--sans);
+  font-size: 13.5px; font-weight: 600;
+  color: var(--ink-faint);
+  border-bottom: 2.5px solid transparent;
+  margin-bottom: -1px;
+}
+.tab-btn:hover{ color: var(--ink); }
+.tab-btn.is-active{ color: var(--bottle); border-bottom-color: var(--bottle); }
+
+.section-panel{ display:none; }
+.section-panel.is-active{ display:block; animation: fade-up .25s ease-out; }
+@keyframes fade-up{ from{ opacity:0; transform: translateY(4px);} to{ opacity:1; transform:none; } }
+
+.panel-intro{
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  background: var(--gilt-soft);
+  border-left: 3px solid var(--gilt);
+  padding: 9px 12px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin: 0 0 18px;
+}
+
+.quality-note{
+  font-size: 12.5px;
+  color: var(--brick);
+  background: var(--brick-soft);
+  border-left: 3px solid var(--brick);
+  padding: 8px 12px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin: 0 0 18px;
+}
+
+/* Chart cards (reveal-on-demand) ---------------------------------------- */
+.chart-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 18px;
+  margin-bottom: 22px;
+}
+.chart-card{
+  background: var(--card);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.chart-card__toggle{
+  width: 100%;
+  display:flex; align-items:center; justify-content:space-between;
+  background: none; border: none; cursor: pointer;
+  padding: 13px 16px;
+  text-align:left;
+}
+.chart-card__title{
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 15.5px;
+  color: var(--ink);
+}
+.chart-card__hint{
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--bottle);
+  border: 1px solid var(--bottle);
+  padding: 3px 8px;
+  border-radius: 20px;
+  flex: none;
+}
+.chart-card.is-open .chart-card__hint{ background: var(--bottle); color: var(--paper); }
+.chart-card__body{
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .28s ease;
+  border-top: 1px solid transparent;
+}
+.chart-card.is-open .chart-card__body{
+  max-height: 420px;
+  border-top-color: var(--rule);
+}
+.chart-card__canvas-wrap{ padding: 16px; height: 300px; position: relative; }
+
+/* Ledger tables ----------------------------------------------------------*/
+.ledger-table-wrap{ overflow-x: auto; margin-bottom: 8px; }
+table.ledger-table{
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+}
+table.ledger-table caption{
+  text-align:left;
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 10px 4px;
+}
+table.ledger-table th, table.ledger-table td{
+  padding: 8px 12px;
+  text-align: right;
+  border-bottom: 1px solid var(--rule);
+  white-space: nowrap;
+}
+table.ledger-table th:first-child, table.ledger-table td:first-child{ text-align:left; }
+table.ledger-table thead th{
+  background: var(--paper-deep);
+  color: var(--ink-soft);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+table.ledger-table tbody tr:hover{ background: var(--paper-deep); }
+td.delta-up{ color: var(--bottle); }
+td.delta-down{ color: var(--brick); }
+td.na{ color: var(--ink-faint); }
+
+/* DuPont waterfall summary row ------------------------------------------*/
+.identity-line{
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--card);
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  color: var(--ink-soft);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.identity-line b{ color: var(--ink); }
+.identity-line .op{ color: var(--gilt); margin: 0 6px; }
+.identity-line .eq{ color: var(--bottle); margin: 0 6px; font-weight:700; }
+
+/* Compare summary cards ---------------------------------------------------*/
+.compare-cards{
+  display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+  gap: 14px; margin-bottom: 22px;
+}
+.compare-card{
+  background: var(--card); border:1px solid var(--rule-strong); border-radius: var(--radius);
+  padding: 14px 16px; box-shadow: var(--shadow-card);
+}
+.compare-card h4{ margin: 0 0 8px; font-family: var(--display); font-size: 17px; }
+.compare-card dl{ margin:0; display:grid; grid-template-columns: 1fr auto; gap: 4px 10px; font-family: var(--mono); font-size: 12.5px; }
+.compare-card dt{ color: var(--ink-faint); }
+.compare-card dd{ margin:0; text-align:right; color: var(--ink); }
+
+.error-banner{
+  background: var(--brick-soft); border: 1px solid var(--brick);
+  color: var(--brick); border-radius: var(--radius);
+  padding: 12px 14px; font-size: 13px; margin-bottom: 16px;
+}
