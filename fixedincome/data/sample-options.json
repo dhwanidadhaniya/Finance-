@@ -1,0 +1,19 @@
+{
+  "label": "Illustrative Data - Not Live Market Data",
+  "default_option": {
+    "stock_price": 2500,
+    "strike_price": 2600,
+    "time_to_maturity": 0.2465753425,
+    "volatility": 0.28,
+    "risk_free_rate": 0.065,
+    "dividend_yield": 0.01,
+    "option_type": "call",
+    "contracts": 50,
+    "multiplier": 1
+  },
+  "portfolio": [
+    { "stock_price": 2500, "strike_price": 2600, "time_to_maturity": 0.2465753425, "volatility": 0.28, "risk_free_rate": 0.065, "dividend_yield": 0.01, "option_type": "call", "contracts": 10, "multiplier": 1 },
+    { "stock_price": 2500, "strike_price": 2450, "time_to_maturity": 0.2465753425, "volatility": 0.28, "risk_free_rate": 0.065, "dividend_yield": 0.01, "option_type": "put", "contracts": 5, "multiplier": 1 },
+    { "stock_price": 2500, "strike_price": 2700, "time_to_maturity": 0.493150685, "volatility": 0.31, "risk_free_rate": 0.065, "dividend_yield": 0.01, "option_type": "call", "contracts": -4, "multiplier": 1 }
+  ]
+}
