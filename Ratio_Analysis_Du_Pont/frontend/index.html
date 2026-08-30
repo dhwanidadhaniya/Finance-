@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Ratio Ledger — DuPont &amp; Ratio Analysis</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"
+        onerror="this.onerror=null;this.src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js';"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="ledger-frame">
+
+  <!-- ============================== INDEX CARD (sidebar) ============================== -->
+  <aside class="index-card">
+    <div class="index-card__brand">
+      <span class="brand-mark">Dr</span>
+      <div class="brand-text">
+        <h1>The Ratio Ledger</h1>
+        <p>Ratio &amp; DuPont ROE Analysis, entered by hand&nbsp;&mdash; verified by formula.</p>
+      </div>
+    </div>
+
+    <form id="controls" class="index-card__form">
+      <div class="field-group" id="mode-toggle">
+        <label class="field-label">Ledger mode</label>
+        <div class="toggle-pair" role="tablist">
+          <button type="button" class="toggle-btn is-active" data-mode="single">Single entry</button>
+          <button type="button" class="toggle-btn" data-mode="compare">Compare (2&ndash;3)</button>
+        </div>
+      </div>
+
+      <div class="field-group" id="single-ticker-field">
+        <label class="field-label" for="ticker-input">Ticker</label>
+        <input id="ticker-input" class="ruled-input" type="text" value="AAPL" autocomplete="off" spellcheck="false" placeholder="e.g. AAPL">
+      </div>
+
+      <div class="field-group is-hidden" id="compare-ticker-field">
+        <label class="field-label" for="tickers-input">Tickers, comma-separated</label>
+        <input id="tickers-input" class="ruled-input" type="text" value="AAPL, MSFT, GOOGL" autocomplete="off" spellcheck="false">
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label" for="frequency-select">Frequency</label>
+          <select id="frequency-select" class="ruled-input">
+            <option value="annual" selected>Annual</option>
+            <option value="quarterly">Quarterly</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="periods-input">Periods <span id="periods-value">6</span></label>
+          <input id="periods-input" type="range" min="2" max="8" value="6">
+        </div>
+      </div>
+
+      <button type="submit" class="post-btn" id="submit-btn">Post to ledger &rarr;</button>
+    </form>
+
+    <div class="index-card__status" id="status-panel" aria-live="polite"></div>
+
+    <div class="index-card__legend">
+      <p class="legend-title">Reading the ledger</p>
+      <ul>
+        <li><span class="swatch swatch--green"></span> figure improved vs. prior period</li>
+        <li><span class="swatch swatch--red"></span> figure worsened vs. prior period</li>
+        <li><span class="stamp-mini">✓</span> DuPont identity reconciles to ROE</li>
+      </ul>
+      <p class="legend-source">Source: Yahoo Finance via <code>yfinance</code>. Figures a company doesn't report are left blank, not guessed.</p>
+    </div>
+  </aside>
+
+  <!-- ============================== MAIN LEDGER SHEET ============================== -->
+  <main class="ledger-sheet" id="ledger-sheet">
+
+    <div class="empty-state" id="empty-state">
+      <div class="empty-state__mark">§</div>
+      <h2>No entry posted yet</h2>
+      <p>Enter a ticker on the left and press <strong>Post to ledger</strong> to pull its statements and open the book.</p>
+    </div>
+
+    <div id="sheet-content" class="sheet-content is-hidden">
+
+      <header class="sheet-header">
+        <div class="sheet-header__title">
+          <h2 id="sheet-title">&mdash;</h2>
+          <p id="sheet-subtitle" class="sheet-subtitle">&mdash;</p>
+        </div>
+        <div class="stamp" id="identity-stamp">
+          <div class="stamp__ring">
+            <span class="stamp__word stamp__word--top">IDENTITY</span>
+            <span class="stamp__center" id="stamp-center">&mdash;</span>
+            <span class="stamp__word stamp__word--bottom">VERIFIED</span>
+          </div>
+        </div>
+      </header>
+
+      <nav class="section-tabs" id="section-tabs" role="tablist"></nav>
+
+      <div class="section-panels" id="section-panels"></div>
+
+    </div>
+  </main>
+</div>
+
+<template id="tpl-chart-card">
+  <article class="chart-card">
+    <button type="button" class="chart-card__toggle">
+      <span class="chart-card__title"></span>
+      <span class="chart-card__hint">reveal chart</span>
+    </button>
+    <div class="chart-card__body">
+      <div class="chart-card__canvas-wrap"><canvas></canvas></div>
+    </div>
+  </article>
+</template>
+
+<script src="app.js"></script>
+</body>
+</html>
